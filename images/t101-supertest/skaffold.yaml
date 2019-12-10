@@ -1,0 +1,25 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  #
+  # github package registry
+  # docker tag IMAGE_ID docker.pkg.github.com/OWNER/REPOSITORY/IMAGE_NAME:VERSION
+  # docker tag IMAGE_ID docker.pkg.github.com/dltdojo/xidunku/t101-supertest
+  # 
+  artifacts:
+  - image: docker.pkg.github.com/dltdojo/xidunku/t101-supertest
+    context: .
+  local:
+    push: false
+deploy:
+  kubectl:
+    manifests:
+      - k8s-*
+profiles:
+#
+# skaffold build -p release
+#
+- name: release
+  build:
+    local:
+      push: true
