@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: inku-xupertest
+  labels:
+    app: inku-xupertest
+spec:
+  containers:
+    - name: container
+      image: localhost:32000/xidunku-xupertest
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+
+

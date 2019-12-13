@@ -2,8 +2,8 @@
 authors = ["y12studio"]
 language = "en"
 multilingual = false
-src = "src"
-title = "xidunku"
+src = "docsrc"
+title = "XiDunKu 西墩庫"
 
 [build]
 build-dir = "docs"

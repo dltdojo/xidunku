@@ -1,0 +1,43 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  insecureRegistries:
+  - localhost:32000
+  tagPolicy:
+    sha256: {}
+  artifacts:
+  - image: localhost:32000/xidunku-xupertest
+    context: .
+deploy:
+  kubectl:
+    manifests:
+      - k8s-dev-*
+portForward:
+  - resourceType: Pod
+    resourceName: inku-xupertest
+    port: 80
+    localPort: 18080
+profiles:
+#
+# skaffold build -p dockerhub
+# [dltdojo's Profile - Docker Hub](https://hub.docker.com/u/dltdojo/)
+# 
+- name: dockerhub
+  build:
+    tagPolicy:
+      envTemplate:
+        template: docker.io/dltdojo/xidunku-xupertest:latest
+    local:
+      push: true
+
+- name: github
+  build:
+  #
+  # github package registry
+  # docker tag IMAGE_ID docker.pkg.github.com/OWNER/REPOSITORY/IMAGE_NAME:VERSION
+  # 
+    artifacts:
+    - image: docker.pkg.github.com/dltdojo/xidunku/xupertest
+      context: .
+    local:
+      push: true

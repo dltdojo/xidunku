@@ -1,0 +1,34 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  tagPolicy:
+    sha256: {}
+  artifacts:
+  - image: localhost:32000/xidunku-xhoami
+    context: .
+deploy:
+  kubectl:
+    manifests:
+      - k8s-*
+
+portForward:
+  - resourceType: Pod
+    resourceName: xidunku-xhoami
+    port: 80
+    localPort: 18080
+    #
+    # skaffold dev --port-forward
+    # 注意每次更新會換
+    # http://127.0.0.1:18080/
+profiles:
+#
+# skaffold build -p dockerhub
+# [dltdojo's Profile - Docker Hub](https://hub.docker.com/u/dltdojo/)
+# 
+- name: dockerhub
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "docker.io/dltdojo/xidunku-xhoami:latest"
+    local:
+      push: true
