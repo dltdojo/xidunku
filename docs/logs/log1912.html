@@ -146,6 +146,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#開發日誌-2019-12" id="開發日誌-2019-12">開發日誌 2019-12</a></h1>
+<h1><a class="header" href="#2019-12-14" id="2019-12-14">2019-12-14</a></h1>
+<ul>
+<li>inku/xctixweb 使用目前最快框架 actix</li>
+</ul>
 <h1><a class="header" href="#2019-12-13" id="2019-12-13">2019-12-13</a></h1>
 <p>地圖範圍由 <a href="https://overpass-turbo.eu/">oeverpass-turbo</a> 選好後匯出檢索資料如下，如要修改條件可將下面資料貼入 overpass-turbo，可用來匯出 geojson 。</p>
 <pre><code>[out:json][timeout:25];
@@ -206,6 +210,21 @@ out skel qt;
 
         </div>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

@@ -1,0 +1,19 @@
+[package]
+name = "xctixweb"
+version = "0.1.0"
+authors = ["y12studio <y12studio@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[[bin]]
+name = "xctixweb"
+path = "src/main.rs"
+
+[dependencies]
+structopt = "0.2.18"
+actix-web = { version= "1.0", features = ["rust-tls"] }
+actix-web-static-files = "0.2"
+rustls = "0.15"
+
+[build-dependencies]
+actix-web-static-files = "0.2"

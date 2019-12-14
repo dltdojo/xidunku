@@ -20,11 +20,8 @@ WORKDIR /go/xhoami
 COPY go.mod .
 COPY go.sum .
 RUN GO111MODULE=on GOPROXY=https://proxy.golang.org go mod download
-
 COPY . .
-
 RUN CGO_ENABLED=0 go build -a --installsuffix cgo --ldflags="-s" -o xhoami
-
 # Create a minimal container to run a Golang static binary
 FROM scratch
 

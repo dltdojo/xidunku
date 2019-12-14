@@ -146,6 +146,8 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#inku-入庫" id="inku-入庫">inku 入庫</a></h1>
+<h1><a class="header" href="#xctixweb" id="xctixweb">xctixweb</a></h1>
+<p>使用目前最快框架 actix，參考 <a href="https://www.techempower.com/benchmarks/#section=data-r18&amp;hw=ph&amp;test=query">Round 18 results - TechEmpower Framework Benchmarks</a></p>
 <h1><a class="header" href="#xhoami" id="xhoami">xhoami</a></h1>
 <p>TODO</p>
 <h1><a class="header" href="#xupertest" id="xupertest">xupertest</a></h1>
@@ -188,6 +190,21 @@
 
         </div>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         
