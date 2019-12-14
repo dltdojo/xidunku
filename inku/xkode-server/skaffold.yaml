@@ -1,0 +1,33 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  tagPolicy:
+    sha256: {}
+  artifacts:
+  - image: localhost:32000/xidunku-kxode-server
+    context: .
+deploy:
+  kubectl:
+    manifests:
+      - k8s-*
+
+portForward:
+  - resourceType: Pod
+    resourceName: xidunku-xkode-server
+    port: 8080
+    localPort: 18080
+    #
+    # skaffold dev --port-forward
+    # http://127.0.0.1:18080/?workspace=/home/coder/ws.json
+profiles:
+#
+# skaffold build -p dockerhub
+# [dltdojo's Profile - Docker Hub](https://hub.docker.com/u/dltdojo/)
+# 
+- name: dockerhub
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "docker.io/dltdojo/xidunku-kxode-server:latest"
+    local:
+      push: true

@@ -1,0 +1,60 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-cs-role
+subjects:
+- kind: ServiceAccount
+  name: k8s-cs-role
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-cs-role
+
+--- 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xidunku-kxode-server
+  labels:
+    app: xidunku-kxode-server
+spec:
+  terminationGracePeriodSeconds: 0
+  securityContext:
+    # Group ID of docker group on k8s nodes. ( cat /etc/group | grep docker)
+    fsGroup: 999    
+  serviceAccountName: k8s-cs-role
+  volumes:
+    - name: dockersock
+      hostPath:
+        path: /var/run/docker.sock
+    - name: hostdir
+      hostPath:
+        # 這個目錄會掛在內部 /home/coder/project
+        path: /tmp
+        type: Directory
+  containers:
+    - name: code-server
+      image: localhost:32000/xidunku-kxode-server
+      ports:
+        - name: web
+          containerPort: 8080
+      volumeMounts:
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+        - name: hostdir
+          mountPath: /home/coder/project
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+
+

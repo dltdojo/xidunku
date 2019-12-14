@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  insecureRegistries:
+  - localhost:32000
+  tagPolicy:
+    sha256: {}
+  artifacts:
+  - image: localhost:32000/x101-echo
+    context: .
+deploy:
+  kubectl:
+    manifests:
+      - k8s-*

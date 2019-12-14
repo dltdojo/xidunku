@@ -1,0 +1,8 @@
+{
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "files.autoSave": "off",
+    "files.associations": {
+        "[Dd]ockerfile*": "dockerfile",
+        "docker-compose*": "yaml"
+    }
+}

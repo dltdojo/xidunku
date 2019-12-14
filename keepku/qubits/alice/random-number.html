@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <title>Quantum Circuit</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        .center {
+            margin: auto;
+            width: 50%;
+            border: 1em solid blanchedalmond;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script type="text/javascript" src="https://unpkg.com/mathjs@6.2.5/dist/math.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/quantum-circuit"></script>
+</head>
+
+<body>
+    <div class="center" id="app">
+        <h2>量子計算電腦的運算模擬器</h2>
+        <h2>{{ message }}</h2>
+        <h2>8-bit Quantum random number generator : {{ qran }}</h2>
+        <hr/>
+        <h2>Classical random number generator : {{ cran }}</h2>
+    </div>
+    <script>
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * Math.floor(max));
+        }
+        // 
+        // [perak/quantum-circuit](https://github.com/perak/quantum-circuit/)
+        // 8-bit quantum random number generator
+        //
+        function quantumRandom () {
+            var circuit = new QuantumCircuit();
+            for (var i = 0; i < 8; i++) {
+                //
+                // add Hadamard gate to the end (-1) of i-th wire
+                //
+                circuit.addGate("h", -1, i);
+                //
+                // add measurement gate to i-th qubit which will store result 
+                // into classical register "c", into i-th classical bit
+                //
+                circuit.addMeasure(i, "c", i);
+            }
+
+            // run circuit
+            circuit.run();
+            // return value of register "c"
+            return circuit.getCregValue("c");
+        };
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Quantum Circuit',
+                qran: 0,
+                cran: 0 
+            },
+            mounted: function () {
+                this.qran = quantumRandom();
+                this.cran = getRandomInt(Number.MAX_SAFE_INTEGER)
+            }
+        });
+    </script>
+</body>
+
+</html>

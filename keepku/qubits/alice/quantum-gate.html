@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <title>Quantum Gate</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        .center {
+            margin: auto;
+            width: 50%;
+            border: 1em solid blanchedalmond;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script type="text/javascript" src="https://unpkg.com/mathjs@6.2.5/dist/math.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/quantum-circuit"></script>
+</head>
+
+<body>
+    <div class="center" id="app">
+        <h2>量子計算電腦的運算模擬器之量子閘</h2>
+        <h2>{{ message }}</h2>
+        <div id="drawing"></div>
+        <h3>QuirkLink</h3>
+        <p><a :href="url" target="_blank">{{ url }}</a></p>
+    </div>
+    <script>
+        // [perak/quantum-circuit: Quantum Circuit Simulator](https://github.com/perak/quantum-circuit)
+        var circuit = new QuantumCircuit();
+
+        function bell() {
+            circuit.init();
+            circuit.addGate("h", 0, 0);
+            circuit.addGate("cx", 1, [0, 1]);
+            let randomInput = false;
+            circuit.run(randomInput);
+        }
+
+        function showCircuit() {
+            var drawing = document.getElementById("drawing");
+            drawing.innerHTML = circuit.exportSVG(true);
+        }
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Quantum Gate bell h+cx',
+                url: 'https://google.com'
+            },
+            mounted: function () {
+                bell();
+                showCircuit();
+                this.url = "http://algassert.com/quirk#circuit=" + JSON.stringify(circuit.exportQuirk(true));
+            }
+        });
+    </script>
+</body>
+
+</html>

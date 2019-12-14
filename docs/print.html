@@ -224,7 +224,54 @@
 <h1><a class="header" href="#2019-12-14" id="2019-12-14">2019-12-14</a></h1>
 <ul>
 <li>inku/xctixweb 使用目前最快框架 actix</li>
+<li>keepku/qubits</li>
+<li>inku/xode-server</li>
 </ul>
+<p>GCP Cloud 體驗</p>
+<p>新增 Ubuntu 18 VM 開啟 HTTPS</p>
+<ul>
+<li>ip 34.69.163.127</li>
+</ul>
+<pre><code>sudo apt update
+sudo apt install docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+exit
+</code></pre>
+<p>開啟一個 http 服務</p>
+<pre><code>docker run -p 443:80 docker.io/dltdojo/xidunku-xhoami
+</code></pre>
+<p>因為 VM 只有開 https 只能用 443 來存取 http 服務</p>
+<ul>
+<li>http://34.69.163.127:443/</li>
+</ul>
+<p>安裝 kubernetes</p>
+<pre><code>sudo snap install microk8s --classic
+sudo usermod -a -G microk8s $USER
+sudo snap alias microk8s.kubectl kubectl
+exit
+</code></pre>
+<p>安裝 microk8s service，注意 ingress 服務會占用主機的 443 服務</p>
+<pre><code>microk8s.enable dns ingress rbac storage registry
+</code></pre>
+<ul>
+<li>https://34.69.163.127/</li>
+<li>https://xode-server-34-69-163-127.nip.io/</li>
+</ul>
+<p>問題是 code-server 會自己轉導致一直跳去 http 但是會卡住無法瀏覽網頁，因為該 VM 已經鎖住只有 443 可用。</p>
+<p><a href="https://github.com/cdr/code-server">cdr/code-server: Run VS Code on a remote server.</a></p>
+<blockquote>
+<p>If code-server has been passed a certificate it will also respond to HTTPS requests and will redirect all HTTP requests to HTTPS. Otherwise it will respond only to HTTP requests.</p>
+</blockquote>
+<pre><code>      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          dumb-init code-server --host 0.0.0.0 --port 443 --cert
+</code></pre>
+<p><a href="https://github.com/cdr/code-server/issues/1117">Need new manual for nginx · Issue #1117 · cdr/code-server</a></p>
 <h1><a class="header" href="#2019-12-13" id="2019-12-13">2019-12-13</a></h1>
 <p>地圖範圍由 <a href="https://overpass-turbo.eu/">oeverpass-turbo</a> 選好後匯出檢索資料如下，如要修改條件可將下面資料貼入 overpass-turbo，可用來匯出 geojson 。</p>
 <pre><code>[out:json][timeout:25];

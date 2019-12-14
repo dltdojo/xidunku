@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <title>Complex Number</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        .center {
+            margin: auto;
+            width: 50%;
+            border: 1em solid rebeccapurple;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script src="https://unpkg.com/mathjs@6.2.5/dist/math.min.js"></script>
+</head>
+
+<body>
+    <div class="center" id="app">
+        <h2>{{ message }}</h2>
+        <h2>Za= 2+3i</h2>
+        <h2>Zb= 4-5i</h2>
+        <h2>Za + Zb={{sum}}</h2>
+        <h2>Za * Zb={{mult}}</h2>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Complex Number',
+                sum: 0,
+                mult: 0,
+            },
+            mounted: function () {
+                // [math.js | an extensive math library for JavaScript and Node.js](https://mathjs.org/download.html)
+                const a = math.complex(2, 3)
+                const b = math.complex(4, -5)
+                this.sum = math.add(a, b).toString()
+                this.mult = math.multiply(a, b).toString()
+            }
+        });
+    </script>
+</body>
+
+</html>
