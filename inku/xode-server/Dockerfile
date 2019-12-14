@@ -5,8 +5,12 @@ FROM docker.io/codercom/code-server:2.1697-vsc1.39.2
 # apt-get install
 #
 USER root
-RUN apt-get update && apt-get install -y netcat-openbsd jq tree curl
+RUN apt-get update && apt-get install -y netcat-openbsd jq tree
 
+#
+# static curl
+#
+COPY --from=docker.io/dltdojo/xidunku-xhoami /curl /usr/local/bin/curl
 COPY --from=docker.io/mikefarah/yq /usr/bin/yq /usr/local/bin/yq
 
 USER coder
@@ -25,5 +29,6 @@ RUN sudo chown -R coder:coder /home/coder
 # $ skaffold dev --port-forward
 # http://127.0.0.1:18080/?workspace=/home/coder/ws.json
 #
+# https://github.com/cdr/code-server/blob/master/src/node/cli.ts
 # ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0", "--auth","none"]
-ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0"]
+ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0", "--port", "8443", "--cert"]
