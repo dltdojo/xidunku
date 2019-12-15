@@ -17,16 +17,16 @@ spec:
       image: localhost:32000/xidunku-xode-server
       ports:
         - name: web
-          containerPort: 8080
+          containerPort: 8443
       #
       # https://github.com/cdr/code-server/blob/master/src/node/cli.ts
       #
-      command:
-        - /bin/bash
-      args:
-        - -c
-        - |
-          dumb-init code-server --host 0.0.0.0 --port 8080
+      #command:
+      #  - /bin/bash
+      #args:
+      #  - -c
+      #  - |
+      #    dumb-init code-server --host 0.0.0.0 --port 8080
       volumeMounts:
         - name: hostdir
           mountPath: /home/coder/project
@@ -48,8 +48,8 @@ spec:
   ports:
     - protocol: TCP
       name: web
-      port: 8080
-      targetPort: 8080
+      port: 443
+      targetPort: 8443
   selector:
     app: xidunku-xode-server
 
@@ -61,8 +61,17 @@ metadata:
   annotations:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/proxy-redirect-from: http://$host/
-    nginx.ingress.kubernetes.io/proxy-redirect-to: /
+    #
+    #
+    # https proxy https 不需要 proxy-redirect-to
+    # rewrite header Location http://host/xxx to https://host/xxx
+    #
+    # nginx.ingress.kubernetes.io/proxy-redirect-from: http://$host/
+    # nginx.ingress.kubernetes.io/proxy-redirect-to: /
+    # 
+    # [NGINX Docs | Securing HTTP Traffic to Upstream Servers](https://docs.nginx.com/nginx/admin-guide/security-controls/securing-http-traffic-upstream/)
+    # TODO
+    # nginx.ingress.kubernetes.io/proxy-ssl-secret: secretName
 spec:
   #
   # TLS/HTTPS - NGINX Ingress Controller https://kubernetes.github.io/ingress-nginx/user-guide/tls/
@@ -77,4 +86,4 @@ spec:
         paths:
           - backend:
               serviceName: xidunku-xode-server
-              servicePort: 8080
+              servicePort: 443

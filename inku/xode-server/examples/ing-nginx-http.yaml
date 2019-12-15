@@ -14,22 +14,25 @@ spec:
         type: Directory
   containers:
     - name: code-server
-      image: docker.io/dltdojo/xidunku-xode-server
+      image: localhost:32000/xidunku-xode-server
       ports:
         - name: web
-          containerPort: 8443
+          containerPort: 8080
       #
       # https://github.com/cdr/code-server/blob/master/src/node/cli.ts
       #
-      #command:
-      #  - /bin/bash
-      #args:
-      #  - -c
-      #  - |
-      #    dumb-init code-server --host 0.0.0.0 --port 8080
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          dumb-init code-server --host 0.0.0.0 --port 8080
       volumeMounts:
         - name: hostdir
           mountPath: /home/coder/project
+      env:
+      #  - name: PASSWORD
+      #    value: letmepass1234
       resources:
         limits:
           memory: "512Mi"
@@ -45,7 +48,8 @@ spec:
   ports:
     - protocol: TCP
       name: web
-      port: 8443
+      port: 8080
+      targetPort: 8080
   selector:
     app: xidunku-xode-server
 
@@ -57,7 +61,12 @@ metadata:
   annotations:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    #
+    # 
+    # rewrite header Location http://host/xxx to https://host/xxx
+    #
+    nginx.ingress.kubernetes.io/proxy-redirect-from: http://$host/
+    nginx.ingress.kubernetes.io/proxy-redirect-to: /
 spec:
   #
   # TLS/HTTPS - NGINX Ingress Controller https://kubernetes.github.io/ingress-nginx/user-guide/tls/
@@ -65,11 +74,11 @@ spec:
   #
   tls:
     - hosts:
-        - xode-server-34-69-163-127.nip.io
+        - xode-server-192-168-2-106.nip.io
   rules:
-    - host: xode-server-34-69-163-127.nip.io
+    - host: xode-server-192-168-2-106.nip.io
       http:
         paths:
           - backend:
               serviceName: xidunku-xode-server
-              servicePort: 8443
+              servicePort: 8080
