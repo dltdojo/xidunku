@@ -43,7 +43,7 @@
                 });
                 sock.addEventListener('close', function () {
                     term.writeln("");
-                    term.writeln("| ψ ⟩ = α | 0 ⟩ + β | 1 ⟩ Connection closed.");
+                    term.writeln("Connection closed.");
                     term.terminadoDetach(sock);
                 });
                 term.open(elemTerminal);

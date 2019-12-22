@@ -9,11 +9,19 @@ spec:
   containers:
     - name: server
       image: localhost:32000/xidunku-xctixweb
-      securityContext:
-        privileged: true
       ports:
         - name: web
           containerPort: 8443
+      command:
+      - /usr/bin/dumb-init
+      - --
+      args:
+      - bash
+      - -c
+      - |
+        /xctixweb
+        # ?? remove this line will trigger the ERROR 
+        # webterm Unable to spawn child: Os { code: 1, kind: PermissionDenied, message: "Operation not permitted" }
       resources:
         limits:
           memory: "512Mi"

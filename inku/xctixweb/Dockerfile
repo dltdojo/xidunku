@@ -34,6 +34,5 @@ ENV RUST_LOG=info
 # docker build -t foo .
 # docker run -p 8443:8443 -v $PWD:/home/alice/host foo
 #
-# USER root with k8s pod spec securityContext.privileged: true
-ENTRYPOINT ["dumb-init", "--"]
-CMD ["/xctixweb"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["bash","-c","/xctixweb"]
