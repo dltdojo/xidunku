@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <meta charset=UTF-8>
+    <title>Index 201912 - XiDunKu</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        .center {
+            margin: auto;
+            width: 90%;
+            border: 1em solid rebeccapurple;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #input {
+            width: 100%;
+            height: 5em;
+        }
+
+        #container {
+            align-items: center;
+            justify-content: center;
+            color: aqua;
+            font-size: 2em;
+            padding: 0.3em;
+        }
+    </style>
+    <script type="module">
+        // https://rustwasm.github.io/docs/wasm-bindgen/examples/without-a-bundler.html
+        import initWebfoo, * as Webfoo from "./wasm/webfoo/webfoo_lib.js";
+        window.addEventListener("load", function (event) {
+            let msg = document.getElementById("message");
+            if (msg) {
+                msg.innerHTML = "Hello";
+            }
+        });
+
+        const input = document.getElementById('input');
+        const container = document.getElementById("container");
+
+        async function runWebfoo() {
+            await initWebfoo();
+            rerender()
+        }
+        if (input) {
+            input.addEventListener('keyup', rerender);
+        }
+
+        function rerender() {
+            if (container) {
+                let v = input ? input.value : new Date();
+                const image = Webfoo.geopattern_gen_base64_svg_string(v);
+                container.style.background = `url("data:image/svg+xml;base64,${image}")`;
+            }
+        }
+        runWebfoo();
+    </script>
+</head>
+<body>
+    <div class="center" id="app">
+        <h1>Index</h1>
+        <h2>Frontend: <span id="message">message</span></h2>
+        <h2>Backend: <a href="backend" target="_blank">Link</a></h2>
+        <h2>WebAssembly</h2>
+        <div id="container">Input:</div>
+        <textarea id='input'># Hello, Quantum Bits! ## | ψ ⟩ = α | 0 ⟩ + β | 1 ⟩</textarea>
+        <h2><a href="webterm.html" target="_blank">Web Terminal</a></h2>
+    </div>
+</body>
+</html>

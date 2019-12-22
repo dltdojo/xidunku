@@ -1,5 +1,13 @@
-FROM rust:1.40 AS build
+FROM docker.io/rust:1.39 as build
+# setup rust with wasm-pack
+RUN apt-get update && apt-get install -y autoconf libtool
+RUN rustup target add wasm32-unknown-unknown
+# RUN cargo install wasm-pack --version 0.8.1
+RUN curl -L -sSf https://github.com/rustwasm/wasm-pack/releases/download/v0.8.1/wasm-pack-v0.8.1-x86_64-unknown-linux-musl.tar.gz > wasm-pack-v0.8.1.tar.gz && \
+    tar xzf wasm-pack-v0.8.1.tar.gz && cp wasm-pack-v0.8.1-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin
+# RUN rustup target add wasm32-wasi
 WORKDIR /app
+
 COPY Cargo.toml Cargo.lock build.rs ./
 #
 # https://github.com/rust-lang/cargo/issues/2644
@@ -12,14 +20,15 @@ RUN mkdir -p src htdocs && \
 COPY build.rs build.sh ./
 COPY src src
 COPY htdocs htdocs
-RUN cargo build --release && cp target/release/xctixweb /xctixweb
+RUN cargo build --release
 
 ## Install the proxy binary into the base runtime image.
-FROM debian:stable-slim
+FROM debian:10
 ONBUILD ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y dumb-init bash sudo openssl curl jq tree w3m
+RUN apt-get update && apt-get install -y dumb-init bash sudo openssl curl jq tree \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /xctixweb /xctixweb
+COPY --from=build /app/target/release/xctixweb /xctixweb
 #
 # https://github.com/cdr/code-server/blob/master/Dockerfile
 #
@@ -29,11 +38,9 @@ USER alice
 RUN mkdir -p /home/alice/host
 WORKDIR /home/alice/host
 VOLUME [ "/home/alice/host" ]
-ENV RUST_LOG=info
 #
 # docker build -t foo .
 # docker run -p 8443:8443 -v $PWD:/home/alice/host foo
 #
-# USER root with k8s pod spec securityContext.privileged: true
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["/xctixweb"]

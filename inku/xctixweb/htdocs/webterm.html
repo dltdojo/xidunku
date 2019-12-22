@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <meta charset=UTF-8>
+    <title>webterm xctixweb/index - XiDunKu 台中</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        #terminal {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="js/xterm/xterm.css" />
+    <script src="js/xterm/xterm.js"></script>
+    <script src="js/xterm/addons/attach/attach.js"></script>
+    <script src="js/xterm/addons/terminado/terminado.js"></script>
+    <script src="js/xterm/addons/fit/fit.js"></script>
+    <script src="js/xterm/addons/search/search.js"></script>
+</head>
+
+<body>
+    <div>http://info.cern.ch - home of the first website</div>
+    <div>$ w3m info.cern.ch</div>
+    <div>Ctrl+z to exit w3m</div>
+    <div id="terminal"></div>
+    <script>
+
+        function handleWebSocket(term, elemTerminal) {
+            var protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
+            var socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') + "/websocket";
+            var sock = new WebSocket(socketURL);
+            if (sock) {
+                sock.addEventListener('open', function () {
+                    term.terminadoAttach(sock);
+                    term.fit();
+                });
+                sock.addEventListener('close', function () {
+                    term.writeln("");
+                    term.writeln("| ψ ⟩ = α | 0 ⟩ + β | 1 ⟩ Connection closed.");
+                    term.terminadoDetach(sock);
+                });
+                term.open(elemTerminal);
+                window.onresize = function () { term.fit(); };
+            }
+        }
+
+        function webterm() {
+            let elemTerminal = document.getElementById('terminal')
+            if (elemTerminal && typeof Terminal == "function") {
+                Terminal.applyAddon(terminado);
+                Terminal.applyAddon(fit);
+                Terminal.applyAddon(search);
+                // console.log("typeof Terminal is ", typeof Terminal);
+                let term = new Terminal();
+                handleWebSocket(term, elemTerminal)
+            }
+        }
+
+        webterm();
+    </script>
+</body>
+
+</html>

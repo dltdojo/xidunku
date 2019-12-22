@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xidunku-xctixweb
+  labels:
+    app: xidunku-xctixweb
+spec:
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: server
+      image: localhost:32000/xidunku-xctixweb
+      securityContext:
+        privileged: true
+      ports:
+        - name: web
+          containerPort: 8443
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"

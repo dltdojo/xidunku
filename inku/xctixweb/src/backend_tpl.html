@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <meta charset=UTF-8>
+    <title>{{name}} xctixweb/index - XiDunKu 台中</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        .center {
+            margin: auto;
+            width: 90%;
+            border: 1em solid rebeccapurple;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #input {
+            width: 100%;
+            height: 5em;
+        }
+
+        #container {
+            align-items: center;
+            justify-content: center;
+            color: aqua;
+            font-size: 2em;
+            padding: 0.3em;
+        }
+    </style>
+    <script>
+         window.addEventListener("load", function (event) {
+            let msg = document.getElementById("message");
+            if (msg) {
+                msg.innerHTML = "Hello";
+            }
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="center" id="app">
+        <h1>台中</h1>
+        <h2>Backend: {{name}} at {{server_time}}</h2>
+        <h2>Frontend: <span id="message">message</span></h2>
+        <h2><a href="index.html" target="_blank">Index Page</a></h2>
+        <h2>WebAssembly</h2>
+        <h2><a href="webterm.html" target="_blank">Web Terminal</a></h2>
+    </div>
+</body>
+
+</html>

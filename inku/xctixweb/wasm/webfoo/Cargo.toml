@@ -1,0 +1,16 @@
+[package]
+name = "webfoo_lib"
+version = "0.1.0"
+authors = ["JOYE LIN <y12studio@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "webfoo_lib"
+path = "src/lib.rs"
+crate-type = ['cdylib']
+
+[dependencies]
+# structopt = { version = "0.3", default-features = false }
+wasm-bindgen = "0.2.50"
+# pulldown-cmark = "0.6"
+geopattern = "0.3.0"

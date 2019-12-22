@@ -1,0 +1,35 @@
+apiVersion: skaffold/v2alpha1
+kind: Config
+build:
+  tagPolicy:
+    sha256: {}
+  artifacts:
+  - image: localhost:32000/xidunku-xctixweb
+    context: .
+deploy:
+  kubectl:
+    manifests:
+      - k8s-*
+
+portForward:
+  - resourceType: Pod
+    resourceName: xidunku-xctixweb
+    address: 0.0.0.0
+    port: 8443
+    localPort: 8443
+    #
+    # skaffold dev --port-forward
+    # 注意每次更新會換
+    # http://127.0.0.1:10443/
+profiles:
+#
+# skaffold build -p dockerhub
+# [dltdojo's Profile - Docker Hub](https://hub.docker.com/u/dltdojo/)
+# 
+- name: dockerhub
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "docker.io/dltdojo/xidunku-xctixweb:latest"
+    local:
+      push: true
