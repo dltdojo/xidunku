@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div id="sidebar-scrollbox" class="sidebar-scrollbox">
-                <ol class="chapter"><li class="expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> 關於西墩庫</a></li><li class="expanded "><a href="inku/index.html"><strong aria-hidden="true">2.</strong> 入庫</a></li><li class="expanded "><a href="keepku/index.html"><strong aria-hidden="true">3.</strong> 守庫</a></li><li><ol class="section"><li class="expanded "><a href="keepku/mdbook-kubook/index.html"><strong aria-hidden="true">3.1.</strong> mdbook-kubook</a></li></ol></li><li class="expanded "><a href="outku/index.html"><strong aria-hidden="true">4.</strong> 出庫</a></li><li class="expanded "><a href="projects/index.html"><strong aria-hidden="true">5.</strong> 其他專案</a></li><li><ol class="section"><li class="expanded "><a href="projects/2020-tw-lantern/index.html"><strong aria-hidden="true">5.1.</strong> 2020台灣燈會在台中</a></li></ol></li><li class="expanded "><a href="logs/index.html"><strong aria-hidden="true">6.</strong> 日誌</a></li><li><ol class="section"><li class="expanded "><a href="logs/log1912.html"><strong aria-hidden="true">6.1.</strong> 2019-12</a></li></ol></li></ol>
+                <ol class="chapter"><li class="expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> 關於西墩庫</a></li><li class="expanded "><a href="inku/index.html"><strong aria-hidden="true">2.</strong> 入庫</a></li><li class="expanded "><a href="keepku/index.html"><strong aria-hidden="true">3.</strong> 守庫</a></li><li><ol class="section"><li class="expanded "><a href="keepku/messaging-sys/index.html"><strong aria-hidden="true">3.1.</strong> messaging-sys</a></li><li class="expanded "><a href="keepku/mdbook-kubook/index.html"><strong aria-hidden="true">3.2.</strong> mdbook-kubook</a></li></ol></li><li class="expanded "><a href="outku/index.html"><strong aria-hidden="true">4.</strong> 出庫</a></li><li class="expanded "><a href="projects/index.html"><strong aria-hidden="true">5.</strong> 其他專案</a></li><li><ol class="section"><li class="expanded "><a href="projects/2020-tw-lantern/index.html"><strong aria-hidden="true">5.1.</strong> 2020台灣燈會在台中</a></li></ol></li><li class="expanded "><a href="logs/index.html"><strong aria-hidden="true">6.</strong> 日誌</a></li><li><ol class="section"><li class="expanded "><a href="logs/log1912.html"><strong aria-hidden="true">6.1.</strong> 2019-12</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -184,6 +184,30 @@
 <h1><a class="header" href="#xupertest" id="xupertest">xupertest</a></h1>
 <p>TODO</p>
 <h1><a class="header" href="#keepku-守庫" id="keepku-守庫">keepku 守庫</a></h1>
+<h1><a class="header" href="#how-to-test" id="how-to-test">How to test</a></h1>
+<h2><a class="header" href="#smtp" id="smtp">smtp</a></h2>
+<pre><code>$ cd keepku/messaging-sys
+$ skaffold dev -p smtpx1
+$ skaffold dev -p smtpx2
+</code></pre>
+<h2><a class="header" href="#rabbitmq" id="rabbitmq">rabbitmq</a></h2>
+<ul>
+<li>guest/guest http://localhost:15672 </li>
+</ul>
+<pre><code>$ skaffold dev -p rabbitmq-dev --port-forward
+$ skaffold dev -p rabbitmq --port-forward
+</code></pre>
+<h1><a class="header" href="#todo" id="todo">TODO</a></h1>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+smtpx1 from bar@locahost to foo@localhost</li>
+<li><input disabled="" type="checkbox" checked=""/>
+smtpx2 from bar@taichung.ku.default.svc.cluster.local foo@taipei.ku.default.svc.cluster.local</li>
+<li><input disabled="" type="checkbox"/>
+rust grpc processor ? <a href="https://github.com/hyperium/tonic">hyperium/tonic: A native gRPC client &amp; server implementation with async/await support.</a></li>
+<li><input disabled="" type="checkbox"/>
+read <a href="https://github.com/kaiwaehner/tensorflow-serving-java-grpc-kafka-streams">kaiwaehner/tensorflow-serving-java-grpc-kafka-streams: Kafka Streams + Java + gRPC + TensorFlow Serving =&gt; Stream Processing combined with RPC / Request-Response</a></li>
+</ul>
 <h1><a class="header" href="#mdbook-kubook" id="mdbook-kubook">mdbook-kubook</a></h1>
 <h2><a class="header" href="#prerequisites" id="prerequisites">prerequisites</a></h2>
 <ul>

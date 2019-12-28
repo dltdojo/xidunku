@@ -3,6 +3,7 @@
 - [關於西墩庫](./README.md)
 - [入庫](./inku/README.md)
 - [守庫](./keepku/README.md)
+  - [messaging-sys](./keepku/messaging-sys/README.md)
   - [mdbook-kubook](./keepku/mdbook-kubook/README.md)
 - [出庫](./outku/README.md)
 - [其他專案](./projects/README.md)
