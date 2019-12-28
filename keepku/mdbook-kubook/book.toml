@@ -1,0 +1,20 @@
+[book]
+authors = ["JOYE LIN"]
+language = "en"
+multilingual = false
+src = "booksrc"
+title = "mdbook-kubook"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[preprocessor.kubook]
+command = "mdbook-kubook"
+renderer = ["html"]
+# which java
+#java-path="/usr/bin/java"
+#plantuml-jar="/usr/local/share/plantuml.jar"
+# windows with git-bash
+# java-path="/c/app/jdk/bin/java.exe"
+# plantuml-jar="/c/app/plantuml.jar"

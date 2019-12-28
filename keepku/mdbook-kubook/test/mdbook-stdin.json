@@ -1,0 +1,60 @@
+[
+  {
+    "root": "/tmp/testbook",
+    "config": {
+      "book": {
+        "authors": [],
+        "language": "en",
+        "multilingual": false,
+        "src": "src"
+      },
+      "preprocessor": {
+        "foo": {
+          "command": "/bin/bash xode-server/profiles/md/mdtool.sh",
+          "renderer": [
+            "html"
+          ]
+        },
+        "kubook": {
+          "command": "mdbook-ku1",
+          "java-path": "/usr/bin/java",
+          "plantuml-jar": "/usr/local/share/plantuml.jar",
+          "renderer": [
+            "html"
+          ]
+        }
+      }
+    },
+    "renderer": "html",
+    "mdbook_version": "0.3.5"
+  },
+  {
+    "sections": [
+      {
+        "Chapter": {
+          "name": "Chapter 1",
+          "content": "# chapter 1\n\nMDBOOK COO\n\n## test\n\nheelo\n\n```plantuml\n@startuml\nBob -> Alice : hello\n@enduml\n```\n\n### test2\n\n- what\n- dsfsdsf\n- fsdfs\n- 中文\n- 神奇",
+          "number": [
+            1
+          ],
+          "sub_items": [],
+          "path": "chapter_1.md",
+          "parent_names": []
+        }
+      },
+      {
+        "Chapter": {
+          "name": "Chapter 2",
+          "content": "# chapter 2\n\n## test \n\n```plantuml\n@startuml\nBob2 -> Alice2 : hello\n@enduml\n```\n\n### test header",
+          "number": [
+            2
+          ],
+          "sub_items": [],
+          "path": "chapter_2.md",
+          "parent_names": []
+        }
+      }
+    ],
+    "__non_exhaustive": null
+  }
+]
