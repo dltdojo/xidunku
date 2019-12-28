@@ -8,7 +8,8 @@
 ## install mdbook-kubook
 
 ```
-$ cargo install mdbook-kubook
+$ git clone https://github.com/dltdojo/xidunku.git && cd xidunku\keepku\mdbook-kubook
+$ cargo install --path .
 ```
 
 ## book.toml
