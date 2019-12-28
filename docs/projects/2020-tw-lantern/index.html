@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -32,11 +32,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../../";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -60,8 +60,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -77,8 +80,8 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li><a href="../../index.html"><strong aria-hidden="true">1.</strong> 關於西墩庫</a></li><li><a href="../../inku/index.html"><strong aria-hidden="true">2.</strong> 入庫</a></li><li><a href="../../keepku/index.html"><strong aria-hidden="true">3.</strong> 守庫</a></li><li><a href="../../outku/index.html"><strong aria-hidden="true">4.</strong> 出庫</a></li><li><a href="../../projects/index.html"><strong aria-hidden="true">5.</strong> 其他專案</a></li><li><ol class="section"><li><a href="../../projects/2020-tw-lantern/index.html" class="active"><strong aria-hidden="true">5.1.</strong> 2020台灣燈會在台中</a></li></ol></li><li><a href="../../logs/index.html"><strong aria-hidden="true">6.</strong> 日誌</a></li><li><ol class="section"><li><a href="../../logs/log1912.html"><strong aria-hidden="true">6.1.</strong> 2019-12</a></li></ol></li></ol>
+            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
+                <ol class="chapter"><li class="expanded "><a href="../../index.html"><strong aria-hidden="true">1.</strong> 關於西墩庫</a></li><li class="expanded "><a href="../../inku/index.html"><strong aria-hidden="true">2.</strong> 入庫</a></li><li class="expanded "><a href="../../keepku/index.html"><strong aria-hidden="true">3.</strong> 守庫</a></li><li><ol class="section"><li class="expanded "><a href="../../keepku/mdbook-kubook/index.html"><strong aria-hidden="true">3.1.</strong> mdbook-kubook</a></li></ol></li><li class="expanded "><a href="../../outku/index.html"><strong aria-hidden="true">4.</strong> 出庫</a></li><li class="expanded "><a href="../../projects/index.html"><strong aria-hidden="true">5.</strong> 其他專案</a></li><li><ol class="section"><li class="expanded "><a href="../../projects/2020-tw-lantern/index.html" class="active"><strong aria-hidden="true">5.1.</strong> 2020台灣燈會在台中</a></li></ol></li><li class="expanded "><a href="../../logs/index.html"><strong aria-hidden="true">6.</strong> 日誌</a></li><li><ol class="section"><li class="expanded "><a href="../../logs/log1912.html"><strong aria-hidden="true">6.1.</strong> 2019-12</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -220,7 +223,30 @@
         </div>
 
         
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
 
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
         
 
         

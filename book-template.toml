@@ -1,0 +1,19 @@
+[book]
+authors = ["y12studio"]
+language = "en"
+multilingual = false
+src = "docsrc"
+title = "XiDunKu 西墩庫"
+
+[build]
+build-dir = "docs"
+create-missing = false
+
+#[preprocessor.kubook]
+#command = "mdbook-kubook"
+#renderer = ["html"]
+#java-path="/usr/bin/java"
+#plantuml-jar="/usr/local/share/plantuml.jar"
+# windows with git-bash
+#java-path="/c/app/java/bin/java.exe"
+#plantuml-jar="/c/app/plantuml.jar"
