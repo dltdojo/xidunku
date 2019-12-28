@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: msgsys-rabbitmq
+  labels:
+    app: msgsys-rabbitmq
+spec:
+  hostname: ramqdev
+  subdomain: kurab
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: taichung
+      image: localhost:32000/msgsys-rabbitmq
+      ports:
+        - name: rabbitmq
+          containerPort: 5672
+        - name: rabbitmq-man
+          containerPort: 15672
+      command:
+        - /usr/local/bin/docker-entrypoint.sh
+      args:
+        - /bin/bash
+        - -c
+        - |
+          function portok(){
+            local _HOST=$1
+            local _PORT=$2
+            local _TIMEOUT=${3:-300}
+            echo "===> check tcp ${_HOST}:${_PORT}"
+            timeout $_TIMEOUT bash -c "until echo > /dev/tcp/${_HOST}/${_PORT}; do sleep 2; done"
+          }
+          echo "====> Start rabbitmq"
+          rabbitmq-server &
+          portok localhost 5672
+          sleep 5
+          rabbitmqctl add_user foo pass
+          rabbitmqctl set_permissions -p / foo ".*" ".*" ".*"
+          sleep 3000
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kurab
+spec:
+  selector:
+    app: msgsys-rabbitmq
+  clusterIP: None

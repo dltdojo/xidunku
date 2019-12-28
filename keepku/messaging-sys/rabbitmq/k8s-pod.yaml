@@ -1,0 +1,160 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: msgsys-rabbitmq
+  labels:
+    app: msgsys-rabbitmq
+spec:
+  hostname: taichung
+  subdomain: kurab
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: taichung
+      image: localhost:32000/msgsys-rabbitmq
+      ports:
+        - name: rabbitmq
+          containerPort: 5672
+        - name: rabbitmq-man
+          containerPort: 15672
+      env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: best-cookie-2019
+        #- name: RABBITMQ_USE_LONGNAME
+        #  value: "true"
+        #- name: RABBITMQ_NDOENAME
+        #  value: "rabbit@taichung.kurab.default.svc.cluster.local"
+      command:
+        - /usr/local/bin/docker-entrypoint.sh
+      args:
+        - /bin/bash
+        - -c
+        - |
+          echo "======> Start $HOSTNAME rabbitmq-server "
+          sleep 10
+          function ip2hosts(){ IP=$(getent hosts $1 | awk '{ print $1 }'); echo "${IP} $2" >> /etc/hosts; }
+          ip2hosts taipei.kurab.default.svc.cluster.local taipei
+          ip2hosts hello.kurab.default.svc.cluster.local hello
+          cat /etc/hosts
+          rabbitmq-server
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: msgsys-rabbitmq2
+  labels:
+    app: msgsys-rabbitmq
+spec:
+  hostname: taipei
+  subdomain: kurab
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: taipei
+      image: localhost:32000/msgsys-rabbitmq
+      ports:
+        - name: rabbitmq
+          containerPort: 5672
+        - name: rabbitmq-man
+          containerPort: 15672
+      env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: best-cookie-2019
+        #- name: RABBITMQ_USE_LONGNAME
+        #  value: "true"
+        #- name: RABBITMQ_NDOENAME
+        #  value: "rabbit@taipei.kurab.default.svc.cluster.local"
+      command:
+        - /usr/local/bin/docker-entrypoint.sh
+      args:
+        - /bin/bash
+        - -c
+        - |
+          echo "======> Start $HOSTNAME rabbitmq-server "
+          sleep 10
+          function ip2hosts(){ IP=$(getent hosts $1 | awk '{ print $1 }'); echo "${IP} $2" >> /etc/hosts; }
+          ip2hosts taichung.kurab.default.svc.cluster.local taichung
+          ip2hosts hello.kurab.default.svc.cluster.local hello
+          cat /etc/hosts
+          rabbitmq-server &
+          sleep 30
+          rabbitmqctl stop_app
+          rabbitmqctl reset
+          rabbitmqctl join_cluster --ram rabbit@taichung
+          rabbitmqctl start_app
+          sleep 3000
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: msgsys-rabbitmq-hello
+  labels:
+    app: msgsys-rabbitmq
+spec:
+  hostname: hello
+  subdomain: kurab
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: hello
+      image: localhost:32000/msgsys-rabbitmq
+      ports:
+        - name: rabbitmq
+          containerPort: 5672
+        - name: rabbitmq-man
+          containerPort: 15672
+      env:
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: best-cookie-2019
+      command:
+        - /usr/local/bin/docker-entrypoint.sh
+      args:
+        - /bin/bash
+        - -c
+        - |
+          echo "======> Start $HOSTNAME rabbitmq-server "
+          sleep 10
+          function ip2hosts(){ IP=$(getent hosts $1 | awk '{ print $1 }'); echo "${IP} $2" >> /etc/hosts; }
+          ip2hosts taichung.kurab.default.svc.cluster.local taichung
+          ip2hosts taipei.kurab.default.svc.cluster.local taipei
+          cat /etc/hosts
+          rabbitmq-server &
+          sleep 30
+          rabbitmqctl stop_app
+          rabbitmqctl reset
+          rabbitmqctl join_cluster --ram rabbit@taichung
+          rabbitmqctl start_app
+          sleep 3000
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kurab
+spec:
+  selector:
+    app: msgsys-rabbitmq
+  clusterIP: None

@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taichung-email-sys
+  labels:
+    app: email-sys
+spec:
+  hostname: taichung
+  subdomain: ku
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: email-server
+      image: localhost:32000/msgsys-email
+      ports:
+        - name: smtp
+          containerPort: 25
+      command:
+        - dumb-init
+        - --
+      args:
+        - /bin/bash
+        - -c
+        - |
+          echo taipei.ku.default.svc.cluster.local taipei.ku.default.svc.cluster.local > /etc/exim4/hubbed_hosts
+          # K8S CIDR 10.0.0.0/8
+          # enable internet mode
+          cat << EOF > /etc/exim4/update-exim4.conf.conf
+          dc_eximconfig_configtype='internet'
+          dc_relay_nets='10.0.0.0/8'
+          dc_localdelivery='mail_spool'
+          EOF
+          # Apply exim config
+          update-exim4.conf
+          # 
+          # Start smtp server
+          exim -bdf -v -q30m &
+          sleep 3
+          # [Simple Mail Transfer Protocol - Wikipedia](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
+          # [Simple Mail Transfer Protocol ietf.org/rfc/rfc2821.txt](https://www.ietf.org/rfc/rfc2821.txt)
+          # [microHOWTO: Send an email using netcat](http://www.microhowto.info/howto/send_an_email_using_netcat.html)
+          # [Send email with netcat - Stack Overflow](https://stackoverflow.com/questions/44250054/send-email-with-netcat)
+          echo "======> SEND MAIL "
+          function slowcat(){ while read; do sleep .5; echo "$REPLY"; done; }
+          slowcat << EOF | nc localhost 25
+          HELO localhost
+          MAIL FROM:bar@taichung.ku.default.svc.cluster.local
+          RCPT TO:foo@taipei.ku.default.svc.cluster.local
+          DATA
+          From: bar@taichung.ku.default.svc.cluster.local
+          To: foo@taipei.ku.default.svc.cluster.local
+          Subject: Test
+          Date: Thu, 31 Feb 2015 12:00:00 +0000
+          
+          Testing. Have a good day!
+
+          .
+          QUIT
+          EOF
+          sleep 3000
+          echo end
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taipei-email-sys
+  labels:
+    app: email-sys
+spec:
+  hostname: taipei
+  subdomain: ku
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: email-server
+      image: localhost:32000/msgsys-email
+      ports:
+        - name: smtp
+          containerPort: 25
+      command:
+        - dumb-init
+        - --
+      args:
+        - /bin/bash
+        - -c
+        - |
+          # TODO kubernetes dns MX record
+          # enable internet mode
+          cat << EOF > /etc/exim4/update-exim4.conf.conf
+          dc_eximconfig_configtype='internet'
+          dc_relay_nets='10.0.0.0/8'
+          dc_localdelivery='mail_spool'
+          EOF
+          # Apply exim config
+          update-exim4.conf
+          exim -bdf -v -q30m &
+          sleep 20
+          echo "======> READ MAIL "
+          su - foo -c "echo p | mail"
+          sleep 3000
+          echo end
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ku
+spec:
+  selector:
+    app: email-sys
+  clusterIP: None

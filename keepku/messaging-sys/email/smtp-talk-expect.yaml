@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: email-server
+  labels:
+    app: email-server
+spec:
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: email-server
+      image: localhost:32000/msgsys-email
+      ports:
+        - name: smtp
+          containerPort: 25
+      command:
+        - dumb-init
+        - --
+      args:
+        - /bin/bash
+        - -c
+        - |
+          exim -bdf -v -q30m &
+          sleep 3
+          # [Simple Mail Transfer Protocol - Wikipedia](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)
+          # [microHOWTO: Send an email using netcat](http://www.microhowto.info/howto/send_an_email_using_netcat.html)
+          echo "======> SEND MAIL "
+          cat <<EOF | expect
+          set timeout 30
+          proc abort {} { exit 2 }
+          spawn nc -C localhost 25
+          expect default abort "220"
+          send "HELO localhost\r"
+          expect default abort "\n250"
+          send "MAIL FROM:bar@localhost\r"
+          expect default abort "\n250 "
+          send "RCPT TO:foo@localhost\r"
+          expect default abort "\n250 "
+          send "DATA\r"
+          expect default abort "\n354 "
+          send "From: bar@localhost\r"
+          send "To: foo@localhost\r"
+          send "Subject: Test\r"
+          send "Date: Thu, 20 Dec 2012 12:00:00 +0000\r"
+          send "\r"
+          send "Testing\r"
+          send ".\r"
+          expect default abort "\n250 "
+          send "QUIT\r"
+          EOF
+          sleep 2
+          echo "======> READ MAIL "
+          su - foo -c "echo p | mail"
+          sleep 3000
+          echo end
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"

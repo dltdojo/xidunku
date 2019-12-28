@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: msgsys-rabbitmq-cli
+  labels:
+    app: msgsys-rabbitmq
+spec:
+  hostname: ramqdev-cli
+  subdomain: kurab
+  terminationGracePeriodSeconds: 0
+  containers:
+    - name: cli
+      image: localhost:32000/msgsys-rabbitmq-cli
+      env:
+        - name: RABBITMQ_HOST
+          value: ramqdev.kurab.default.svc.cluster.local
+      command:
+        - /bin/sh
+      args:
+        - -c
+        - |
+          function portok(){
+            local _HOST=$1
+            local _PORT=$2
+            local _TIMEOUT=${3:-300}
+            echo "===> check tcp ${_HOST}:${_PORT}"
+            timeout $_TIMEOUT bash -c "until echo > /dev/tcp/${_HOST}/${_PORT}; do sleep 2; done"
+          }
+          portok $RABBITMQ_HOST 5672
+          echo "===> wait user foo ready"
+          # wait user foo ready
+          # sleep 30
+          sleep 30
+          echo "===> node send.js"
+          node send.js
+          echo "===> node receive.js"
+          node receive.js
+          sleep 5
+          sleep 3000
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "200m"
