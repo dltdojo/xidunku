@@ -30,7 +30,7 @@ code block with plantumlsvg and plantumltxt
 ```plantumlsvg
 @startuml
 Alice->Bob : Good Great
-Bob->Alice: 2019
+Bob->Alice: 2019中文
 @enduml
 ```
 

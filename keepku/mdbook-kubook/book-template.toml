@@ -16,5 +16,5 @@ renderer = ["html"]
 #java-path="/usr/bin/java"
 #plantuml-jar="/usr/local/share/plantuml.jar"
 # windows with git-bash
-# java-path="/c/app/jdk/bin/java.exe"
+# java-path="/c/app/java/bin/java.exe"
 # plantuml-jar="/c/app/plantuml.jar"

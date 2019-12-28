@@ -131,6 +131,7 @@ pub fn plantuml_cli(
     // sh -c "/usr/bin/java -jar /home/xxx/yyy/zzz/plantuml.jar -ttxt -pipe"
     let args = [
         java_path,
+        "-Dfile.encoding=UTF-8",
         "-jar",
         plantuml_jar_path,
         output_type_arg,
