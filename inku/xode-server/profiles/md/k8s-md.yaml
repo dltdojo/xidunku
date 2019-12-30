@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xidunku-xode-server-md
+  labels:
+    app: xidunku-xode-server-md
+spec:
+  terminationGracePeriodSeconds: 0
+  volumes:
+    - name: hostdir
+      hostPath:
+        path: /tmp
+        type: Directory
+  containers:
+    - name: code-server
+      image: localhost:32000/xidunku-xode-server-md
+      ports:
+        - name: md
+          containerPort: 3000
+        - name: md-websocket
+          containerPort: 13001
+      env:
+        - name: MDBOOK_ROOT
+          value: /home/coder/project/testbook
+      command:
+        - /usr/bin/dumb-init
+        - --
+      args:
+        - /bin/bash
+        - -c
+        - |
+          if [ -d "$MDBOOK_ROOT" ]
+          then
+            pushd $MDBOOK_ROOT
+            mdbook serve -n 0.0.0.0 --port 3000 --websocket-port 13001 --websocket-hostname 127.0.0.1
+          else
+            echo "mdbook directory $MDBOOK_ROOT exists."
+          fi
+          #
+      volumeMounts:
+        - name: hostdir
+          mountPath: /home/coder/project
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"

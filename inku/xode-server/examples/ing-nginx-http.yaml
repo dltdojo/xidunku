@@ -61,10 +61,6 @@ metadata:
   annotations:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
-    #
-    # 
-    # rewrite header Location http://host/xxx to https://host/xxx
-    #
     nginx.ingress.kubernetes.io/proxy-redirect-from: http://$host/
     nginx.ingress.kubernetes.io/proxy-redirect-to: /
 spec:
@@ -74,9 +70,9 @@ spec:
   #
   tls:
     - hosts:
-        - xode-server-192-168-2-106.nip.io
+        - xode-server-127-0-0-1.nip.io
   rules:
-    - host: xode-server-192-168-2-106.nip.io
+    - host: xode-server-127-0-0-1.nip.io
       http:
         paths:
           - backend:

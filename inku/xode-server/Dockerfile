@@ -31,4 +31,5 @@ RUN sudo chown -R coder:coder /home/coder
 #
 # https://github.com/cdr/code-server/blob/master/src/node/cli.ts
 # ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0", "--auth","none"]
-ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0", "--port", "8443", "--cert"]
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["/bin/bash","-c","code-server --host 0.0.0.0 --port 8443 --cert"]
