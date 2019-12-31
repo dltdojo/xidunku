@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: xidunku-xode-server
+
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: xidunku-xode-server
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: xidunku-xode-server-md
+
+spec:
+  ports:
+    - protocol: TCP
+      name: md
+      port: 3000
+      targetPort: 3000
+    - protocol: TCP
+      name: md-websokcet
+      port: 13001
+      targetPort: 13001
+  selector:
+    app: xidunku-xode-server-md
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: xidunku-xode-server-ingress
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-redirect-from: http://$host/
+    nginx.ingress.kubernetes.io/proxy-redirect-to: /
+spec:
+  #
+  # TLS/HTTPS - NGINX Ingress Controller https://kubernetes.github.io/ingress-nginx/user-guide/tls/
+  # The default certificate will also be used for ingress tls: sections that do not have a secretName option.
+  #
+  tls:
+    - hosts:
+        - xode-server-127-0-0-1.nip.io
+  rules:
+    - host: xode-server-127-0-0-1.nip.io
+      http:
+        paths:
+          - backend:
+              serviceName: xidunku-xode-server
+              servicePort: 8080
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: xidunku-xode-server-ingress-ws
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade "websocket";
+      proxy_set_header Connection "upgrade";
+
+spec:
+  tls:
+    - hosts:
+        - mdbook-127-0-0-1.nip.io
+  rules:
+    - host: mdbook-127-0-0-1.nip.io
+      http:
+        paths:
+          - path: /websocket
+            backend:
+              serviceName: xidunku-xode-server-md
+              servicePort: 13001
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: xidunku-xode-server-ingress-md
+  annotations:
+    #
+    #  websocket port mapping issue
+    #  https://github.com/rust-lang/mdBook/blob/554f29703f3034e77cab9b6bbc438e3b5ec3cfa3/src/cmd/serve.rs#L81
+    #  var socket = new WebSocket("ws://127.0.0.1:13001");
+    #
+    #  Nginx sub_filter temporary solution (CPU intensive task)
+    #  var socket = new WebSocket("wss://mdbook-127-0-0-1.nip.io/websocket");
+    #
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Accept-Encoding "";
+      sub_filter 'ws://127.0.0.1:13001' 'wss://mdbook-127-0-0-1.nip.io/websocket';
+
+spec:
+  tls:
+    - hosts:
+        - mdbook-127-0-0-1.nip.io
+  rules:
+    - host: mdbook-127-0-0-1.nip.io
+      http:
+        paths:
+          - backend:
+              serviceName: xidunku-xode-server-md
+              servicePort: 3000

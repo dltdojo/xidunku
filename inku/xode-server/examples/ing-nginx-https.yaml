@@ -30,7 +30,7 @@ spec:
       volumeMounts:
         - name: hostdir
           mountPath: /home/coder/project
-      env:
+      # env:
       #  - name: PASSWORD
       #    value: letmepass1234
       resources:
@@ -68,7 +68,7 @@ metadata:
     #
     # nginx.ingress.kubernetes.io/proxy-redirect-from: http://$host/
     # nginx.ingress.kubernetes.io/proxy-redirect-to: /
-    # 
+    #
     # [NGINX Docs | Securing HTTP Traffic to Upstream Servers](https://docs.nginx.com/nginx/admin-guide/security-controls/securing-http-traffic-upstream/)
     # TODO
     # nginx.ingress.kubernetes.io/proxy-ssl-secret: secretName

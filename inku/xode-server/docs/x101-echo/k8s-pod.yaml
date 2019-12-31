@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: x101-echo
+spec:
+  containers:
+    - name: story
+      image: localhost:32000/x101-echo
+      resources:
+        limits:
+          memory: "16Mi"
+          cpu: "100m"

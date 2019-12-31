@@ -1,4 +1,4 @@
-apiVersion: skaffold/v1
+apiVersion: skaffold/v2alpha1
 kind: Config
 build:
   insecureRegistries:
@@ -6,6 +6,8 @@ build:
   artifacts:
   - image: localhost:32000/xidunku-xode-server
     context: .
+    docker:
+      dockerfile: Dockerfile
 deploy:
   kubectl:
     manifests:
@@ -13,10 +15,11 @@ deploy:
 portForward:
   - resourceType: Pod
     resourceName: xidunku-xode-server
-    port: 8080
-    localPort: 18080
+    address: 0.0.0.0
+    port: 8443
+    localPort: 10443
     # skaffold dev --port-forward
-    # http://127.0.0.1:18080/?workspace=/home/coder/ws.json
+    # https://127.0.0.1:18443/?workspace=/home/coder/ws.json
 profiles:
 #
 # skaffold build -p dockerhub
@@ -27,5 +30,91 @@ profiles:
     tagPolicy:
       envTemplate:
         template: "docker.io/dltdojo/xidunku-xode-server:latest"
+    artifacts:
+    - image: localhost:32000/xidunku-xode-server
+      context: .
+      docker:
+        dockerfile: Dockerfile
     local:
       push: true
+- name: dockerhub-k8scli
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "docker.io/dltdojo/xidunku-xode-server:k8scli"
+    artifacts:
+    - image: localhost:32000/xidunku-xode-server-k8scli
+      context: .
+      docker:
+        dockerfile: Dockerfile.k8scli
+    local:
+      push: true
+- name: dockerhub-mdbook
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "docker.io/dltdojo/xidunku-xode-server:mdbook"
+    artifacts:
+    - image: localhost:32000/xidunku-xode-server-md
+      context: .
+      docker:
+        dockerfile: Dockerfile.mdbook
+    local:
+      push: true
+- name: dev-ing
+  deploy:
+    kubectl:
+      manifests:
+        - examples/ing-nginx-http.yaml
+- name: k8scli
+  build:
+    artifacts:
+    - image: localhost:32000/xidunku-xode-server-k8scli
+      context: .
+      docker:
+        dockerfile: Dockerfile.k8scli
+  deploy:
+    kubectl:
+      manifests:
+        - profiles/k8scli/k8s-*
+- name: md
+  build:
+    artifacts:
+    - image: localhost:32000/xidunku-xode-server-md
+      context: .
+      docker:
+        dockerfile: Dockerfile.mdbook
+  deploy:
+    kubectl:
+      manifests:
+        - profiles/md/k8s-md.yaml
+        - profiles/md/k8s-code-server-8443.yaml
+  portForward:
+    - resourceType: Pod
+      resourceName: xidunku-xode-server
+      address: 0.0.0.0
+      port: 8443
+      localPort: 10443
+    - resourceType: Pod
+      resourceName: xidunku-xode-server-md
+      address: 0.0.0.0
+      port: 3000
+      localPort: 13000
+    - resourceType: Pod
+      resourceName: xidunku-xode-server-md
+      address: 0.0.0.0
+      port: 13001
+      localPort: 13001
+- name: md-ing
+  build:
+    artifacts:
+    - image: localhost:32000/xidunku-xode-server-md
+      context: .
+      docker:
+        dockerfile: Dockerfile.mdbook
+  deploy:
+    kubectl:
+      manifests:
+        - profiles/md/k8s-code-server-8080.yaml
+        - profiles/md/k8s-md.yaml
+        - profiles/md/k8s-ingress.yaml

@@ -1,0 +1,21 @@
+FROM docker.io/dltdojo/xidunku-xode-server:latest
+USER root
+#
+# mdbook download
+# [rust-lang/mdBook: Create book from markdown files. Like Gitbook but implemented in Rust](https://github.com/rust-lang/mdBook)
+#
+ENV MDBOOK_VERSION=v0.3.5
+RUN curl -sL https://github.com/rust-lang-nursery/mdBook/releases/download/${MDBOOK_VERSION}/mdbook-${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xvz && \
+    mv mdbook /usr/local/bin/ && mdbook --version
+#
+# mdbook-toc download
+# [badboy/mdbook-toc: A preprocessor for mdbook to add inline Table of Contents support.](https://github.com/badboy/mdbook-toc)
+#
+ENV MDBOOK_TOC_VERSION=0.2.2
+RUN curl -sL https://github.com/badboy/mdbook-toc/releases/download/${MDBOOK_TOC_VERSION}/mdbook-toc-${MDBOOK_TOC_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xvz && \
+    mv mdbook-toc /usr/local/bin/ && mdbook-toc --version
+USER coder
+#COPY docs /home/coder/docs
+#RUN sudo chown -R coder:coder /home/coder
+#ENTRYPOINT ["dumb-init", "--"]
+#CMD ["/bin/bash","-c","code-server --host 0.0.0.0 --port 8443 --cert"]
