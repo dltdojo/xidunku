@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+
+<head>
+    <meta charset=UTF-8>
+    <title>XiDunKu 台中</title>
+    <style>
+        html,
+        body {
+            margin: 5px;
+            padding: 0;
+            background-color: azure;
+        }
+
+        .center {
+            margin: auto;
+            width: 90%;
+            border: 1em solid rebeccapurple;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #input {
+            width: 100%;
+            height: 5em;
+        }
+
+        #container {
+            align-items: center;
+            justify-content: center;
+            color: aqua;
+            font-size: 2em;
+            padding: 0.3em;
+        }
+    </style>
+    <script>
+        window.addEventListener("load", function (event) {
+            let msg = document.getElementById("message");
+            if (msg) {
+                msg.innerHTML = "XiDunKu";
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="center" id="app">
+        <h2>Frontend: <span id="message">message</span></h2>
+        <div id="container">lolosa wasm-bindgen lib</div>
+    </div>
+    <script type="module">
+        // https://rustwasm.github.io/docs/wasm-bindgen/examples/without-a-bundler.html
+        import initLolosa, * as Lolosa from "./pkg/lolosa.js";
+        async function loadWasm() {
+            await initLolosa();
+            let container = document.getElementById("container");
+            if (container) {
+                const image = Lolosa.geopattern_gen_base64_svg_string("x" + new Date());
+                container.style.background = `url("data:image/svg+xml;base64,${image}")`;
+            }
+            console.log("bip39?", Lolosa.bip39_string("hello"));
+        }
+        loadWasm();
+    </script>
+</body>
+
+</html>

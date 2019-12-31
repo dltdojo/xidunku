@@ -1,0 +1,16 @@
+[package]
+name = "lolosa"
+version = "0.1.0"
+authors = ["JOYE LIN <y12studio@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "lolosa"
+path = "src/lib.rs"
+crate-type = ['cdylib']
+
+[dependencies]
+wasm-bindgen = "0.2.50"
+# pulldown-cmark = "0.6"
+geopattern = "0.3.0"
+tiny-bip39 = "0.6.2"
