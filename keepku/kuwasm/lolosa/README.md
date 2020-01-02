@@ -1,7 +1,8 @@
-# build 
+# build and test
 
 ```shell
-wasm-pack build --target=web 
+$ cargo +nightly test
+$ rustup run nightly wasm-pack build --target=web
 ```
 
 # projects

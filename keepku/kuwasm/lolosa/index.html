@@ -58,7 +58,9 @@
                 const image = Lolosa.geopattern_gen_base64_svg_string("x" + new Date());
                 container.style.background = `url("data:image/svg+xml;base64,${image}")`;
             }
-            console.log("bip39?", Lolosa.bip39_string("hello"));
+            console.log("bip39 seed = ", Lolosa.bip39_seed("谷 遵 亦 園 焰 坡 复 虛 鋼 表 閃 糾"));
+            console.log("hd 256k1 key = ", Lolosa.hd_256k1_key("谷 遵 亦 園 焰 坡 复 虛 鋼 表 閃 糾","m/44'/60'/0'/0/0"));
+            LOLOSA = Lolosa;
         }
         loadWasm();
     </script>

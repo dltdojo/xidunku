@@ -10,7 +10,29 @@ path = "src/lib.rs"
 crate-type = ['cdylib']
 
 [dependencies]
-wasm-bindgen = "0.2.50"
+wasm-bindgen = "0.2"
 # pulldown-cmark = "0.6"
 geopattern = "0.3.0"
 tiny-bip39 = "0.6.2"
+tiny-hderive = "0.2.1"
+sha2 = "0.8"
+sha3 = "0.8"
+hex = "0.4"
+clear_on_drop = { version = "0.2.3", features = ["no_cc"] }
+#
+# alloc only work in nightly channel
+# rustup run nightly wasm-pack build --target=web
+#
+ed25519-dalek = { version = "1.0.0-pre.3", default-features = false, features = ["u64_backend", "alloc"] }
+
+#[dependencies.ursa]
+# [Wasm for ursa by mikelodder7 · Pull Request #78 · hyperledger/ursa](https://github.com/hyperledger/ursa/pull/78)
+#version = "0.3.0"
+#default-features = false 
+#features = ["wasm"]
+
+[dev-dependencies]
+# wasmtime-rust = { git = 'https://github.com/bytecodealliance/wasmtime' }
+# anyhow = "1"
+secp256k1 = "0.15"
+bitcoin = "0.21.0"
