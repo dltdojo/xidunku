@@ -31,6 +31,25 @@ macro_rules! libra_crypto_from_hex {
 }
 
 #[wasm_bindgen]
+pub fn ipfs_file_name(content: &str) -> String {
+    let mh_sha256_ipfs =
+        parity_multihash::encode(parity_multihash::Hash::SHA2256, content.as_bytes()).unwrap();
+    bs58::encode(mh_sha256_ipfs.as_bytes()).into_string()
+}
+
+#[wasm_bindgen]
+pub fn multihash_sha2_256(content: &str) -> String {
+    let x = parity_multihash::encode(parity_multihash::Hash::SHA2256, content.as_bytes()).unwrap();
+    hex::encode(x)
+}
+
+#[wasm_bindgen]
+pub fn multihash_sha3_256(content: &str) -> String {
+    let x = parity_multihash::encode(parity_multihash::Hash::SHA3256, content.as_bytes()).unwrap();
+    hex::encode(x)
+}
+
+#[wasm_bindgen]
 pub fn geopattern_gen_minified_svg_string(s: &str) -> String {
     GeoPattern::new(s)
         .build()
@@ -193,5 +212,20 @@ mod tests {
         const SK: &str = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
         let proof = libra_vrf_proof("", SK);
         assert_eq!(proof, "9275df67a68c8745c0ff97b48201ee6db447f7c93b23ae24cdc2400f52fdb08a1a6ac7ec71bf9c9c76e96ee4675ebff60625af28718501047bfd87b810c2d2139b73c23bd69de66360953a642c2a330a");
+    }
+
+    #[test]
+    fn test_ipfs_file_name() {
+        let filename = ipfs_file_name("hello");
+        assert_eq!("QmRN6wdp1S2A5EtjW9A3M1vKSBuQQGcgvuhoMUoEz4iiT5", filename);
+    }
+
+    #[test]
+    fn test_multihash() {
+        // multiformats/multihash: Self describing hashes - for future proofing https://github.com/multiformats/multihash
+        assert_eq!(
+            "12209cbc07c3f991725836a3aa2a581ca2029198aa420b9d99bc0e131d9f3e2cbe47",
+            multihash_sha2_256("multihash")
+        );
     }
 }

@@ -96,6 +96,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
+name = "blake2"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94cb07b0da6a73955f8fb85d24c466778e70cda767a568229b104f0264089330"
+dependencies = [
+ "byte-tools 0.3.1",
+ "crypto-mac 0.7.0",
+ "digest 0.8.1",
+ "opaque-debug",
+]
+
+[[package]]
 name = "block-buffer"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -127,6 +139,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "bs58"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b170cd256a3f9fa6b9edae3e44a7dfdfc77e8124dbc3e2612d75f9c3e2396dae"
+
+[[package]]
 name = "bumpalo"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -149,6 +167,16 @@ name = "byteorder"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7c3dd8985a7111efc5c80b44e23ecdd8c007de8ade3b96595387e812b957cf5"
+
+[[package]]
+name = "bytes"
+version = "0.4.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "206fdffcfa2df7cbe15601ef46c813fce0965eb3286db6b56c583b814b51c81c"
+dependencies = [
+ "byteorder",
+ "iovec",
+]
 
 [[package]]
 name = "bytes"
@@ -437,6 +465,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "iovec"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2b3ea6ff95e175473f8ffe6a7eb7c00d054240321b84c57051175fe3c1e075e"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "keccak"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -470,7 +507,7 @@ source = "git+https://github.com/libra/libra.git#b8f5c4af4c5b9dd80fe9c5c155ee01e
 dependencies = [
  "anyhow",
  "byteorder",
- "bytes",
+ "bytes 0.5.3",
  "curve25519-dalek 1.2.3",
  "digest 0.8.1",
  "ed25519-dalek 1.0.0-pre.1",
@@ -547,11 +584,13 @@ name = "lolosa"
 version = "0.1.0"
 dependencies = [
  "bitcoin",
+ "bs58",
  "clear_on_drop",
  "ed25519-dalek 1.0.0-pre.3",
  "geopattern",
  "hex 0.4.0",
  "libra-crypto",
+ "parity-multihash",
  "pretty_assertions",
  "secp256k1",
  "sha2 0.8.0",
@@ -617,6 +656,21 @@ checksum = "ceda21136251c6d5a422d3d798d8ac22515a6e8d3521bb60c59a8349d36d0d57"
 dependencies = [
  "byteorder",
  "rand 0.4.6",
+]
+
+[[package]]
+name = "parity-multihash"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c70cad855872dd51ce6679e823efb6434061a2c1782a1686438aabf506392cdd"
+dependencies = [
+ "blake2",
+ "bytes 0.4.12",
+ "rand 0.6.5",
+ "sha-1",
+ "sha2 0.8.0",
+ "sha3",
+ "unsigned-varint",
 ]
 
 [[package]]
@@ -939,6 +993,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha-1"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23962131a91661d643c98940b20fcaffe62d776a823247be80a48fcb8b6fce68"
+dependencies = [
+ "block-buffer 0.7.3",
+ "digest 0.8.1",
+ "fake-simd",
+ "opaque-debug",
+]
+
+[[package]]
 name = "sha1"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1118,6 +1184,12 @@ name = "unicode-xid"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "826e7639553986605ec5979c7dd957c7895e93eabed50ab2ffa7f6128a75097c"
+
+[[package]]
+name = "unsigned-varint"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7f0023a96687fe169081e8adce3f65e3874426b7886e9234d490af2dc077959"
 
 [[package]]
 name = "wasm-bindgen"

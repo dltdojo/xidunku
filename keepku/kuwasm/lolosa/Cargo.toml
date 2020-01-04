@@ -18,6 +18,8 @@ tiny-hderive = "0.2.1"
 sha2 = "0.8"
 sha3 = "0.8"
 hex = "0.4"
+bs58 = "0.3.0"
+parity-multihash = "0.2.0"
 clear_on_drop = { version = "0.2.3", features = ["no_cc"] }
 libra-crypto = { git = "https://github.com/libra/libra.git" }
 #
