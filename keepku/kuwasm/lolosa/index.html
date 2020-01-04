@@ -34,6 +34,7 @@
         }
     </style>
     <script>
+        var LOLOSA;
         window.addEventListener("load", function (event) {
             let msg = document.getElementById("message");
             if (msg) {
@@ -59,7 +60,9 @@
                 container.style.background = `url("data:image/svg+xml;base64,${image}")`;
             }
             console.log("bip39 seed = ", Lolosa.bip39_seed("谷 遵 亦 園 焰 坡 复 虛 鋼 表 閃 糾"));
-            console.log("hd 256k1 key = ", Lolosa.hd_256k1_key("谷 遵 亦 園 焰 坡 复 虛 鋼 表 閃 糾","m/44'/60'/0'/0/0"));
+            console.log("hd 256k1 key = ", Lolosa.hd_256k1_key("谷 遵 亦 園 焰 坡 复 虛 鋼 表 閃 糾", "m/44'/60'/0'/0/0"));
+            let libra_vrf_sk = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
+            console.log("VRF alpha=hello and proof=", Lolosa.libra_vrf_proof("hello", libra_vrf_sk));
             LOLOSA = Lolosa;
         }
         loadWasm();

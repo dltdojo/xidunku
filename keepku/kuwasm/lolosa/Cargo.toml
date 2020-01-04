@@ -19,11 +19,15 @@ sha2 = "0.8"
 sha3 = "0.8"
 hex = "0.4"
 clear_on_drop = { version = "0.2.3", features = ["no_cc"] }
+libra-crypto = { git = "https://github.com/libra/libra.git" }
 #
 # alloc only work in nightly channel
 # rustup run nightly wasm-pack build --target=web
 #
 ed25519-dalek = { version = "1.0.0-pre.3", default-features = false, features = ["u64_backend", "alloc"] }
+
+[patch.crates-io]
+threshold_crypto = { version = "0.3", git = "https://github.com/poanetwork/threshold_crypto" }
 
 #[dependencies.ursa]
 # [Wasm for ursa by mikelodder7 · Pull Request #78 · hyperledger/ursa](https://github.com/hyperledger/ursa/pull/78)
@@ -36,3 +40,4 @@ ed25519-dalek = { version = "1.0.0-pre.3", default-features = false, features = 
 # anyhow = "1"
 secp256k1 = "0.15"
 bitcoin = "0.21.0"
+pretty_assertions = "0.6"

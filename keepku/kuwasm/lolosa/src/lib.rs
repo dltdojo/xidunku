@@ -1,11 +1,34 @@
 use bip39::{Language, Mnemonic, Seed};
-use geopattern::geo_pattern::GeoPattern;
-use tiny_hderive::bip32::ExtendedPrivKey;
-use wasm_bindgen::prelude::*;
-use sha2::{Sha512, Digest};
-use sha3::{Sha3_256};
+use core::convert::TryFrom;
 use ed25519_dalek::Keypair;
 use ed25519_dalek::Signature;
+use geopattern::geo_pattern::GeoPattern;
+use libra_crypto::{traits::Uniform, vrf::ecvrf::*};
+use sha2::{Digest, Sha512};
+use sha3::Sha3_256;
+use tiny_hderive::bip32::ExtendedPrivKey;
+use wasm_bindgen::prelude::*;
+
+macro_rules! libra_crypto_hex_string {
+    ($e:expr) => {
+        format!("{}", ::hex::encode($e.to_bytes().as_ref()))
+    };
+}
+
+macro_rules! libra_crypto_from_hex {
+    (CompressedEdwardsY, $e:expr) => {
+        CompressedEdwardsY::from_slice(&::hex::decode($e).unwrap())
+            .decompress()
+            .unwrap()
+    };
+    (VRFPublicKey, $e:expr) => {{
+        let v: &[u8] = &::hex::decode($e).unwrap();
+        VRFPublicKey::try_from(v).unwrap()
+    }};
+    ($t:ty, $e:expr) => {
+        <$t>::try_from(::hex::decode($e).unwrap().as_ref()).unwrap()
+    };
+}
 
 #[wasm_bindgen]
 pub fn geopattern_gen_minified_svg_string(s: &str) -> String {
@@ -64,13 +87,51 @@ pub fn sha2msg512(msg: &str) -> String {
     hex::encode(result)
 }
 
+#[wasm_bindgen]
+pub fn libra_vrf_proof(alpha: &str, sk: &str) -> String {
+    //
+    // https://github.com/libra/libra/blob/master/crypto/crypto/src/vrf/ecvrf.rs
+    // https://tools.ietf.org/html/draft-irtf-cfrg-vrf-04
+    // SK
+    // let private_key = VRFPrivateKey::generate_for_testing(&mut rng);
+    let private_key = libra_crypto_from_hex!(VRFPrivateKey, sk);
+    // PK
+    // let public_key: VRFPublicKey = (&private_key).into();
+    //  pi = VRF_prove(SK, alpha)
+    let proof = private_key.prove(alpha.as_bytes());
+    // beta = VRF_proof_to_hash(pi)
+    // OUTPUT_LENGTH: usize = 64;
+    // ECVRF-ED25519-SHA512-TAI
+    // SHA-2 SHA-512
+    // let output: Output = (&proof).into();
+    // Produce a pseudorandom output from a `Proof`:
+    //let _pk = libra_crypto_hex_string!(public_key);
+    // let _output = libra_crypto_hex_string!(output);
+    let proof_hex = libra_crypto_hex_string!(proof);
+    // VRF_verify(PK, alpha, pi)
+    // public_key.verify(pi,alpha)
+    // assert!(public_key.verify(&proof, alpha.as_bytes()).is_ok());
+    format!("{}", proof_hex)
+}
+
+#[wasm_bindgen]
+pub fn libra_vrf_output(proof_hex: &str) -> String {
+    let proof: Proof = libra_crypto_from_hex!(Proof, proof_hex);
+    let output: Output = (&proof).into();
+    let output_hex = libra_crypto_hex_string!(output);
+    format!("{}", output_hex)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    use pretty_assertions::{assert_eq, assert_ne};
     #[test]
     fn test_sha3msg256() {
-        assert_eq!("3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532", sha3msg256("abc"));
+        assert_eq!(
+            "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532",
+            sha3msg256("abc")
+        );
     }
 
     #[test]
@@ -124,5 +185,13 @@ mod tests {
             "L4ak82DxxLF5QN7rtyVhyJ9gg4u4FBdqq24uBho84MYFNnfrAFWd",
             bsk.to_wif()
         );
+    }
+
+    #[test]
+    fn test_vrf_proof() {
+        // https://github.com/libra/libra/blob/master/crypto/crypto/src/vrf/unit_tests/vrf_test.rs#L47
+        const SK: &str = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
+        let proof = libra_vrf_proof("", SK);
+        assert_eq!(proof, "9275df67a68c8745c0ff97b48201ee6db447f7c93b23ae24cdc2400f52fdb08a1a6ac7ec71bf9c9c76e96ee4675ebff60625af28718501047bfd87b810c2d2139b73c23bd69de66360953a642c2a330a");
     }
 }
