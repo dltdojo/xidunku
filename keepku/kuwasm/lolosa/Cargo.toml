@@ -40,6 +40,6 @@ threshold_crypto = { version = "0.3", git = "https://github.com/poanetwork/thres
 [dev-dependencies]
 # wasmtime-rust = { git = 'https://github.com/bytecodealliance/wasmtime' }
 # anyhow = "1"
-secp256k1 = "0.15"
+secp256k1 = "0.22"
 bitcoin = "0.21.0"
 pretty_assertions = "0.6"
